@@ -1,53 +1,56 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace DLLInjector
 {
 	public class DLLInjectorLib
-    {
+	{
 		public const string pluginGuid = "tybikkryt.dllinjector";
 		public const string pluginName = "DLLInjector";
-		public const string pluginVersion = "1.0.0.0";
+		public const string pluginVersion = "1.0.1.0";
+		public static string pluginPath;
+
+		public static Action<string> Log;
 
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr LoadLibrary(string moduleName);
 
-		public void InjectAll(string pluginPath, Action<string> log)
+		public static void InjectAll()
 		{
 			string dirInjectionDlls = Path.Combine(pluginPath, "DLLInjector", "InjectionDlls");
-			log($"Searching DLLs in: {dirInjectionDlls}");
+			Log($"Searching DLLs in: {dirInjectionDlls}");
 
 			if (!Directory.Exists(dirInjectionDlls))
 			{
-				log("InjectionDlls directory not found. Creating...");
+				Log("InjectionDlls directory not found. Creating...");
 				try
 				{
 					Directory.CreateDirectory(dirInjectionDlls);
-					log("InjectionDlls directory created successfully");
+					Log("InjectionDlls directory created successfully");
 				}
 				catch (Exception ex)
 				{
-					log($"Failed to create InjectionDlls directory: {ex.Message}");
+					Log($"Failed to create InjectionDlls directory: {ex.Message}");
 					return;
 				}
 			}
 
-			List<string> dllFiles = new List<string>();
+			List<string> dllFiles = [];
 			try
 			{
 				dllFiles.AddRange(Directory.GetFiles(dirInjectionDlls, "*.dll"));
 			}
 			catch (Exception ex)
 			{
-				log($"Error getting DLL files: {ex.Message}");
+				Log($"Error getting DLL files: {ex.Message}");
 				return;
 			}
 
 			if (dllFiles.Count == 0)
 			{
-				log("No DLLs found in the InjectionDlls directory");
+				Log("No DLLs found in the InjectionDlls directory");
 				return;
 			}
 
@@ -56,24 +59,24 @@ namespace DLLInjector
 			{
 				if (File.Exists(dllPath))
 				{
-					log($"Injecting DLL {dllPath}");
+					Log($"Injecting DLL {dllPath}");
 					IntPtr tHandle = LoadLibrary(dllPath);
 					if (tHandle != IntPtr.Zero)
 					{
-						log("DLL injected successfully");
+						Log("DLL injected successfully");
 					}
 					else
 					{
-						log($"Failed to inject DLL. Error code: {Marshal.GetLastWin32Error()}");
+						Log($"Failed to inject DLL. Error code: {Marshal.GetLastWin32Error()}");
 					}
 				}
 				else
 				{
-					log($"DLL not found: {dllPath}");
+					Log($"DLL not found: {dllPath}");
 				}
 			}
 
-			log("Finished injecting all DLLs");
+			Log("Finished injecting all DLLs");
 		}
 	}
 }

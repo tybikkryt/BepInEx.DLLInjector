@@ -8,7 +8,9 @@ namespace DLLInjector
 	{
 		private void Awake()
 		{
-			new DLLInjectorLib().InjectAll(Paths.PluginPath, Logger.LogMessage);
+			DLLInjectorLib.Log = Logger.LogMessage;
+			DLLInjectorLib.pluginPath = Paths.PluginPath;
+			DLLInjectorLib.InjectAll();
 		}
 	}
 }

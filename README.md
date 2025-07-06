@@ -1,6 +1,6 @@
 # About
 
-This is a simple BepInEx plugin that automatically injects your DLLs into the game on startup. No need for injectors anymore.
+This is a simple BepInEx plugin that automatically injects your DLLs into the game on startup. No need for .exe injectors anymore.
 
 ## Compatibility
 

@@ -8,7 +8,9 @@ namespace DLLInjector
 	{
 		public override void Load()
 		{
-			new DLLInjectorLib().InjectAll(Paths.PluginPath, Log.LogMessage);
+			DLLInjectorLib.Log = Log.LogMessage;
+			DLLInjectorLib.pluginPath = Paths.PluginPath;
+			DLLInjectorLib.InjectAll();
 		}
 	}
 }
